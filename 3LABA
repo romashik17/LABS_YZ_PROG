@@ -1,0 +1,92 @@
+<iostream>  
+#include <string>  
+#include <locale>  #include <codecvt> using 
+namespace std;  
+int main(int argc, char **argv)  
+{  
+    locale loc("ru_RU.UTF-8");     
+wstring_convert<codecvt_utf8<wchar_t>, wchar_t>  
+codec;     string str="В караване было  верблюдов";    
+wstring ws = codec.from_bytes(str);     int x;    cout<<"Введите целое число от 0 до 100 ---> ";     cin>>x;      if(x>=0 and x<=100) {  
+        if(x%10==1 and (x>=21 or x==1)) {             ws.erase(24,2);             
+ws.insert(16,to_wstring(x));             ws.erase(14,1);  
+        }         if(x%10>1 and x%10<5 and x>=21) {             ws.erase(24,2);             ws.insert(16,to_wstring(x));             string s="а";  
+            wstring wt=codec.from_bytes(s);             ws=ws+wt;         }  
+        if(x%10==0 or x%10>=5) {             ws.insert(16,to_wstring(x));  
+        }  
+        str = codec.to_bytes(ws);         cout<<str<<endl;  
+    }     return 0; }
+
+
+<iostream>  
+#include <string> using namespace std;  
+int main(int argc, char **argv)  
+{  
+    string str="deb http://mirror.mephi.ru/debian/  stretch   main   contrib   non-free\ndeb-src http://mirror.mephi.ru/debian/ stretch main contrib nonfree\ndeb http://security.debian.org/ stretch/updates  main   contrib   non-free\ndeb-src  http://security.debian.org/ stretch/updates main contrib non-free\ndeb http://mirror.mephi.ru/debian/ stretchupdates   main   contrib   non-free\ndebsrc http://mirror.mephi.ru/debian/ stretch-updates main contrib non-free\ndeb http://mirror.mephi.ru/debian stretch-backports main contrib non-free\ndeb-src http://mirror.mephi.ru/debian stretch-backports main contrib non-free\n";     int s=0;     do {         s = str.find("mephi");         if (s!=-1) {             str=str.replace(s,5,"yandex");  
+        }  
+    } while(s!=-1);     cout<<str;      return 0;  
+}
+
+
+
+#include <iostream>  
+ 
+  
+#include <string> using 
+namespace std;  
+int main(int argc, char **argv)  
+{     int z;  
+    string str="deb http://mirror.mephi.ru/debian/  
+stretch   main   contrib   non-free\ndeb-src http://mirror.mephi.ru/debian/ stretch main contrib nonfree\ndeb http://security.debian.org/ stretch/updates main   contrib   non-free\ndeb-src  http://security.debian.org/ stretch/updates main contrib non-free\ndeb http://mirror.mephi.ru/debian/ stretchupdates   main   contrib   non-free\ndebsrc http://mirror.mephi.ru/debian/ stretch-updates main contrib non-free\ndeb http://mirror.mephi.ru/debian stretch-backports main contrib non-free\ndeb-src http://mirror.mephi.ru/debian stretch-backports main contrib non-free\n";     z=str.size();     cout<<"Количество символов: ";     cout<<z<<endl;     int k=0;      for(int i=0; i<z; i++) {         if(str[i]!=' ' and str[i]!='\n'){             
+k++;  
+        }     }     cout<<"Количество символов без пробелов и  
+символов конца строки: ";     cout<<k<<endl;  
+    return 0;  
+}  
+
+
+
+wstring encrypt(const wstring & text, const int key)  
+{  
+    locale loc("ru_RU.UTF-8");     locale::global(loc);  
+    wstring_convert<codecvt_utf8<wchar_t>, wchar_t> 
+codec;     wchar_t x=0;     wstring ntext;     int z=text.size();     for(int i=0; i<z; i++) {         if((text[i]<L'А' or text[i]>L'Я') and  text[i]!=L'Ё' )             if ((text[i]<L'а' or text[i]>L'я') and text[i]!=L'ё') {                 continue;  
+            }         x=text[i];         x=toupper(x,loc);         
+x=encryptSimvola(x,key);         ntext=ntext 
++ x;  
+    }  
+Код функции шифрования символа:  
+wchar_t encryptSimvola(wchar_t x, const int key)  
+{  
+    locale loc("ru_RU.UTF-8");     locale::global(loc);     wstring_convert<codecvt_utf8<wchar_t>, wchar_t> codec;     wstring m=  
+L"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";     for(int k=0; k<33; k++) {         if(x==m[k]) {             if(k+key<33) {                 x=m[k+key];               return x;  
+            } else {                 
+x=m[k+key-33];                 return x;              }  
+        }     }     
+return x;  
+ 	}  
+
+
+wstring decrypt(const wstring & text, const int key)  
+{  
+    locale loc("ru_RU.UTF-8");     locale::global(loc);  
+    wstring_convert<codecvt_utf8<wchar_t>, wchar_t> 
+codec;     wchar_t x=0;     wstring ntext;     int z=text.size();     for(int i=0; i<z; i++) {         if((text[i]<L'А' or text[i]>L'Я') and  text[i]!=L'Ё' )             if ((text[i]<L'а' or  
+text[i]>L'я')  	and  	text[i]!=L'ё'  	)  	{    
+ntext=L"ОШИБКА!";                 break;             
+}         x=text[i];         x=toupper(x,loc);         x=decryptSimvola(x,key);         
+ntext=ntext + x;  
+    }      return ntext;  
+}  
+Код функции расшифровки символа:  
+wchar_t decryptSimvola(wchar_t x, const int key)  
+{  
+    locale loc("ru_RU.UTF-8");     locale::global(loc);  
+    wstring_convert<codecvt_utf8<wchar_t>, wchar_t>  
+codec;     wstring m= 
+L"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";     for(int k=0; k<33; k++) {         if(x==m[k]) {          if(k-key>=0) {                 x=m[k-key];               return x;  
+            } else {                 
+x=m[33+k-key];                 return x;  
+            }          }  
+    }     return 
+x; 
