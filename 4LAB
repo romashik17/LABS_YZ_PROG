@@ -1,0 +1,104 @@
+class String
+{
+private:
+    char *value;
+    int len;
+public:
+    String():value(new char[1] {}),len(0) {
+    }
+Рисунок 1 -  Конструктор по умолчанию
+
+    String(const String &copy) {
+        len = copy.len;
+        value = new char[len + 1];
+        strcpy(value, copy.value);
+    }
+Рисунок 2 -  Конструктор копирования
+
+    ~String() {
+        delete[] value;
+    }
+Рисунок 3 -  Деструктор
+
+friend ostream& operator << (ostream& stream, const String& orig);
+};
+ostream& operator << (ostream& stream, const String& orig)
+{
+    stream << orig.value;
+    return stream;
+}
+
+
+int main()
+{
+    String S("Roman Shebalkov 18pt1");
+    cout << S <<endl;
+    return 0;
+}
+
+
+String(const char* s) {
+        len = strlen(s);
+        value = new char[len + 1];
+        strcpy(value, s);
+    }
+    
+    
+    
+    friend istream& operator >> (istream& stream, String& orig);
+istream& operator >> (istream& stream, String& orig)
+{
+    stream >> orig.value;
+    return stream;
+}
+
+
+
+int main()
+{
+    String S;
+    cout<<"Введите строку: ";
+    cin>>S; 
+    cout << S <<endl;
+    return 0;
+}
+
+
+String& operator = (const String& right) {
+        len = right.len;
+        delete[] value;
+        value = new char[len + 1];
+        strcpy(value, right.value);
+        return *this;
+    }
+    
+    int main()
+{
+    String S, S1;
+    cout<<"Введите строку: ";
+    cin>>S;
+    S1 = S ;
+    cout << S1 <<endl;
+    return 0;
+}
+
+
+ String operator + (const String& right) {
+        char *s = new char[len + right.len + 1];
+        String result(strcat(strcpy(s, value), right.value));
+        delete[] s;
+        return result;
+    }
+    
+    
+    int main()
+{
+    String S1, S2, S;
+    cout << "Введите строку: ";
+    cin >> S1;
+    cout << "Введите cтроку: ";
+    cin >> S2;
+    S = S1 + S2;
+    cout << S << endl;
+    return 0;
+}
